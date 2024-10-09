@@ -7,37 +7,47 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tech.entity.Product;
+import com.tech.entity.repositry.CategoryRepositry;
 import com.tech.entity.repositry.ProductRepositry;
 
 @Service
 public class ProductService {
 
-	public ProductService() {
-		System.out.println("inside ProductService()");
-	}
-	
-	@Autowired
-	ProductRepositry productRepositry;
-	
-	public List<Product> CreateProduct(List<Product> product) {
-		return productRepositry.saveAll(product);
-	}
-	
-	public Optional<Product> GetByIdProduct(int id) {
-		return productRepositry.findById(id);
-	}
-	
-	public List<Product> GetAllProduct() {
-		return productRepositry.findAll();
-	}
-	
-	public void deleteProductyById(int id) {
-		productRepositry.deleteById(id);
-	}
-	
-public Product UpdateProductById(Product product) {
-		
-		productRepositry.findById(product.getId()).orElseThrow();
-		return productRepositry.save(product);
-	}
+    @Autowired
+    private ProductRepositry productRepositry;
+
+    @Autowired
+    private CategoryRepositry categoryRepository;
+
+    public List<Product> createProduct(List<Product> products) {
+        // Save categories before saving products
+        products.forEach(product -> {
+            if (product.getCategory() != null) {
+                categoryRepository.save(product.getCategory());
+            }
+        });
+        return productRepositry.saveAll(products);
+    }
+
+    public Optional<Product> getProductById(int id) {
+        return productRepositry.findById(id);
+    }
+
+    public List<Product> getAllProducts() {
+        return productRepositry.findAll();
+    }
+
+    public void deleteProductById(int id) {
+        productRepositry.deleteById(id);
+    }
+
+    public Product updateProductById(Product product) {
+        Product existingProduct = productRepositry.findById(product.getId()).orElseThrow();
+        // Update existing product with new values
+        existingProduct.setName(product.getName());
+        existingProduct.setDescription(product.getDescription());
+        existingProduct.setPrice(product.getPrice());
+        // Save updated product
+        return productRepositry.save(existingProduct);
+    }
 }

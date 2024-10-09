@@ -10,43 +10,45 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.tech.entity.Product;
 import com.tech.service.ProductService;
 
+@RestController
 public class ProductController {
 
-	public ProductController() {
-		System.out.println("ProductController()  inside");
-	}
+    public ProductController() {
+        System.out.println("ProductController()  inside");
+    }
 
-	@Autowired
-	ProductService productService;
+    @Autowired
+    private ProductService productService;
 
-	@PostMapping("/CreateProduct")
-	public List<Product> CreateProduct(@RequestBody List<Product> products) {
-		return productService.CreateProduct(products);
-	}
-	
-	@GetMapping("/GetProductById/{id}")
-	public Optional<Product> GetProductById(@PathVariable ("id") int id) {
-	return	productService.GetByIdProduct(id);
-	}
-	
-	public List<Product> GetAllProduct() {
-		return productService.GetAllProduct();
-	}
-	
-	@DeleteMapping("/deleteCategoryById/{id}")
-	public String deleteProductById(@PathVariable("id") int id) {
-		productService.deleteProductyById(id);
+    @PostMapping("/create-product")
+    public List<Product> createProduct(@RequestBody List<Product> products) {
+        return productService.createProduct(products);
+    }
 
-		return "deleted suceccfully";
-	}
-	
-	@PutMapping("/UpdateProductById/product")
-	public Product UpdateProductById(@RequestBody Product product) {
-       
-		 return UpdateProductById(product);
-	}
+    @GetMapping("/get-product/{id}")
+    public Optional<Product> getProductById(@PathVariable("id") int id) {
+        return productService.getProductById(id);
+    }
+
+    @GetMapping("/get-all-products")
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
+    }
+
+    @DeleteMapping("/delete-product/{id}")
+    public String deleteProductById(@PathVariable("id") int id) {
+        productService.deleteProductById(id);
+        return "Deleted successfully";
+    }
+
+    @PutMapping("/update-product/{id}")
+    public Product updateProductById(@PathVariable("id") int id, @RequestBody Product product) {
+        product.setId(id);
+        return productService.updateProductById(product);
+    }
 }

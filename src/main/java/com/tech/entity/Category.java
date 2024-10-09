@@ -1,5 +1,6 @@
 package com.tech.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -24,7 +25,8 @@ public class Category {
 	private String description;
 	
 	 @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval=true)
-	private Set<Product> product;
+	 private Set<Product> product = new HashSet<>();
+
 
 	public int getId() {
 		return id;
